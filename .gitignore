@@ -1,0 +1,4 @@
+vendor/apex/com.android.vndk.current.on_vendor.apex
+system/system/product/app/NgaResources/NgaResources.apk
+system/system/product/priv-app/Velvet/Velvet.apk
+system/system/priv-app/OmniStyle/OmniStyle.apk

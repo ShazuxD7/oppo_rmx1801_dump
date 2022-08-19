@@ -1,0 +1,14 @@
+# derp_RMX1801-user RQ3A.211001.001
+- manufacturer: 
+- platform: sdm660
+- codename: RMX1801
+- flavor: derp_RMX1801-user
+- release: 11
+- id: RQ3A.211001.001
+- incremental: 1657450455
+- tags: release-keys
+- fingerprint: oppo/derp_RMX1801/RMX1801:11/RQ3A.211001.001/community07101621:user/release-keys
+- is_ab: false
+- brand: oppo
+- branch: derp_RMX1801-user-RQ3A.211001.001
+- repo: oppo_rmx1801_dump
