@@ -1,0 +1,12 @@
+/data/etc/appchannel/preinstall.babe
+/data/etc/appchannel/iReader_preinstall.txt
+/data/etc/appchannel/jtexpress_oppo_preburn.ini
+/data/etc/appchannel/lazadaChannel.txt
+/data/etc/appchannel/kwai_lite_vn.appsflyer
+/data/etc/appchannel/OPPO_36577_browserconfiginfo
+/data/etc/appchannel/dailyhunt_preburn_oppo.txt
+/data/etc/appchannel/paytm_preburn_oppo.txt
+/data/etc/appchannel/amzn.mshop.properties
+/data/etc/appchannel/kwai_vn.appsflyer
+/data/etc/appchannel/zalo_appchannel.in
+/data/etc/appchannel/pre_install.topnews

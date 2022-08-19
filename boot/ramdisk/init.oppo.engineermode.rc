@@ -1,0 +1,75 @@
+#JianRong.Zheng@Swdp.Android.EngineeringMode, 2016/11/02, Add for record engineermode test result
+on post-fs-data
+    exec u:r:oppo_shell:s0 radio system -- /system/bin/init.oppo.engineermode.sh addRadioFile
+
+    mkdir /data/engineermode
+    chown system system /data/engineermode
+    chmod 0775 /data/engineermode
+    mkdir /data/theme_bak
+    chown system system /data/theme_bak
+    chmod 0777 /data/theme_bak
+    mkdir /persist/engineermode
+    chown system system /persist/engineermode
+    chmod 0775 /persist/engineermode
+    chmod 0644 /persist/engineermode/ENG_RESULT
+    chown system system /persist/engineermode/adb_switch
+    chmod 0644 /persist/engineermode/adb_switch
+
+#Yang.Li@Swdp.Android.Power, 2014/12/10, Add for
+on property:sys.engineermode.chargeswitch=true
+    write /sys/class/power_supply/battery/mmi_charging_enable 1
+
+on property:sys.engineermode.chargeswitch=false
+    write /sys/class/power_supply/battery/mmi_charging_enable 0
+
+service engineer_native /system/bin/engineer_native
+    class main
+    user system
+    group system sdcard_r sdcard_rw
+
+
+#JianRong.Zheng@Swdp.Android.EngineeringMode, 2014/07/21, Add for
+service engineer_shell /system/bin/sh /system/bin/init.oppo.engineermode.sh switchEng
+    class late_start
+    user root
+    oneshot
+    seclabel u:r:oppo_shell:s0
+
+service startDiagSocket /system/bin/sh /system/bin/init.oppo.engineermode.sh startDiagSocketLog
+    user root
+    disabled
+    oneshot
+    seclabel u:r:oppo_shell:s0
+
+service stopDiagSocket /system/bin/sh /system/bin/init.oppo.engineermode.sh stopDiagSocketLog
+    user root
+    disabled
+    oneshot
+    seclabel u:r:oppo_shell:s0
+
+service opposysd /system/bin/oppo-system-daemon
+    class main
+    user root
+    group root diag
+    disabled
+
+#add for gps/wifi test launch opposysd to control motor block, enabled by wifi_diag
+on property:oppo.wifi.ftmtest=1
+    start opposysd
+
+on property:oppo.wifi.ftmtest=0
+    stop opposysd
+
+service cpustressAging /system/bin/sh /system/bin/init.oppo.engineermode.sh startCpustressAging
+    user root
+    disabled
+    oneshot
+    seclabel u:r:oppo_shell:s0
+
+#Add for set media.stagefright.audio.deep(default_prop) in mmi speaker test
+on property:sys.media.stagefright.audio.deep=true
+    setprop media.stagefright.audio.deep true
+
+on property:sys.media.stagefright.audio.deep=false
+    setprop media.stagefright.audio.deep false
+

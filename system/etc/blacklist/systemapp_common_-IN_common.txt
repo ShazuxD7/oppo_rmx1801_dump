@@ -1,0 +1,4 @@
+com.coloros.ocrscanner
+com.coloros.ocrservice
+com.coloros.translate.engine
+com.coloros.cloud

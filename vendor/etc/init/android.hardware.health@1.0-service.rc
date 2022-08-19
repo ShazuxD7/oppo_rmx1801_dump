@@ -1,0 +1,10 @@
+service health-hal-1-0 /vendor/bin/hw/android.hardware.health@1.0-service
+    class hal
+#ifndef VENDOR_EDIT
+#Ji.Xu PSW.BSP.CHG  2018-07-23  Save battery capacity to persist partition
+#   user system
+#   group system
+#else
+    user root
+    group system
+#endif

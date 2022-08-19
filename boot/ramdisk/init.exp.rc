@@ -1,0 +1,13 @@
+#exp common operator soft use
+#Likuan.Ren@PSW.AD.CommonOperatorSoft.1249024, 2018/01/30, Add for self_init domain to access block_device for init prop
+service prop-adap-core /vendor/bin/self-init core
+    class core
+    user root
+    oneshot
+    seclabel u:r:rutilsdaemon:s0
+
+service prop-adap-main /vendor/bin/self-init main
+    class main
+    user root
+    oneshot
+    seclabel u:r:rutilsdaemon:s0

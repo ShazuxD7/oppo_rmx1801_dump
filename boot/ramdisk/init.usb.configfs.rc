@@ -1,0 +1,309 @@
+on property:sys.usb.config=none && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/UDC "none"
+    stop adbd
+#ifndef VENDOR_EDIT
+#Fuchun.Liao@BSP.CHG.Basic 2017/02/17 modify for adb error
+#    setprop sys.usb.ffs.ready 0
+#endif /* VENDOR_EDIT */
+#ifndef VENDOR_EDIT
+# wenbin.liu@BSP.CHG.Basic, 2017/12/25  delete for usb eye
+#   setprop sys.usb.ffs.mtp.ready 0
+#endif /*VENDOR_EDIT*/
+    write /config/usb_gadget/g1/bDeviceClass 0
+    write /config/usb_gadget/g1/bDeviceSubClass 0
+    write /config/usb_gadget/g1/bDeviceProtocol 0
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    rmdir /config/usb_gadget/g1/functions/rndis.gs4
+    setprop sys.usb.state ${sys.usb.config}
+
+#ifndef VENDOR_EDIT
+# wenbin.liu@BSP.CHG.Basic, 2017/12/25  delete for usb eye
+#on property:init.svc.adbd=stopped
+#    setprop sys.usb.ffs.ready 0
+#endif /*VENDOR_EDIT*/
+
+on property:sys.usb.config=adb && property:sys.usb.configfs=1
+    start adbd
+
+#ifdef VENDOR_EDIT
+#Haiping.Zhong@PSW.AD.CTS.1182939, 2017/12/25, Add for cts
+#run cts --skip-connectivity-check -o -m CtsAppSecurityHostTestCases -t android.appsecurity.cts.DirectBootHostTest#testDirectBootEmulated
+on property:sys.usb.config=none,adb
+    setprop sys.usb.configfs 1
+    setprop sys.usb.config adb
+
+on property:sys.usb.config=none && property:persist.sys.usb.config=diag,adb && property:persist.sys.emulate_fbe=*
+    setprop sys.usb.configfs 1
+    setprop sys.usb.config diag,adb
+
+on property:sys.usb.config=none && property:persist.sys.usb.config=adb && property:persist.sys.emulate_fbe=*
+    setprop sys.usb.configfs 1
+    setprop sys.usb.config adb
+
+on property:persist.sys.permission.enable=false
+    setprop persist.sys.allcommode true
+#endif
+
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+#ifndef VENDOR_EDIT
+#Fuchun.Liao@BSP.CHG.Basic 2017/01/24 modify for oppo vid & pid
+#    write /config/usb_gadget/g1/idVendor 0x18d1
+#    write /config/usb_gadget/g1/idProduct 0x4ee7
+#else
+     write /config/usb_gadget/g1/idVendor 0x22D9
+     write /config/usb_gadget/g1/idProduct 0x2769
+#endif /* VENDOR_EDIT */
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+#ifndef VENDOR_EDIT
+# wenbin.liu@BSP.CHG.Basic, 2017/12/25  delete for usb eye
+#on property:sys.usb.ffs.mtp.ready=1 && property:sys.usb.config=mtp && property:sys.usb.configfs=1
+#else
+   on property:sys.usb.config=mtp && property:sys.usb.configfs=1
+#endif /* VENDOR_EDIT */
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+#ifndef VENDOR_EDIT
+#Fuchun.Liao@BSP.CHG.Basic 2017/01/24 modify for oppo vid & pid
+#    write /config/usb_gadget/g1/idVendor 0x18d1
+#    write /config/usb_gadget/g1/idProduct 0x4ee1
+#else
+     write /config/usb_gadget/g1/idVendor 0x22D9
+     write /config/usb_gadget/g1/idProduct 0x2764
+#endif /* VENDOR_EDIT */
+    symlink /config/usb_gadget/g1/functions/mtp.gs0 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
+    start adbd
+    
+#ifndef VENDOR_EDIT
+# wenbin.liu@BSP.CHG.Basic, 2017/12/25  delete for usb eye
+#on property:sys.usb.ffs.ready=1 && property:sys.usb.ffs.mtp.ready=1 && \
+#property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
+#else
+    on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
+#endif /* VENDOR_EDIT */
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+#ifndef VENDOR_EDIT
+#Fuchun.Liao@BSP.CHG.Basic 2017/01/24 modify for oppo vid & pid
+#    write /config/usb_gadget/g1/idVendor 0x18d1
+#    write /config/usb_gadget/g1/idProduct 0x4ee2
+#else
+     write /config/usb_gadget/g1/idVendor 0x22D9
+     write /config/usb_gadget/g1/idProduct 0x2765
+#endif /* VENDOR_EDIT */
+    symlink /config/usb_gadget/g1/functions/mtp.gs0 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+#ifndef VENDOR_EDIT
+# wenbin.liu@BSP.CHG.Basic, 2017/12/25  delete for usb eye
+#on property:sys.usb.ffs.mtp.ready=1 && property:sys.usb.config=ptp && property:sys.usb.configfs=1
+#else
+    on property:sys.usb.config=ptp && property:sys.usb.configfs=1
+#endif /* VENDOR_EDIT */
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ptp"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+#ifndef VENDOR_EDIT
+#Fuchun.Liao@BSP.CHG.Basic 2017/01/24 modify for oppo vid & pid
+#    write /config/usb_gadget/g1/idVendor 0x18d1
+#    write /config/usb_gadget/g1/idProduct 0x4ee5
+#else
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2771
+#endif /* VENDOR_EDIT */
+    symlink /config/usb_gadget/g1/functions/ptp.gs1 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
+    start adbd
+
+#ifndef VENDOR_EDIT
+# wenbin.liu@BSP.CHG.Basic, 2017/12/25  delete for usb eye
+#on property:sys.usb.ffs.ready=1 && property:sys.usb.ffs.mtp.ready=1 && \
+#property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
+#else
+    on property:sys.usb.ffs.ready=1 && property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
+#endif /* VENDOR_EDIT */
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "ptp_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+#ifndef VENDOR_EDIT
+#Fuchun.Liao@BSP.CHG.Basic 2017/01/24 modify for oppo vid & pid
+#    write /config/usb_gadget/g1/idVendor 0x18d1
+#    write /config/usb_gadget/g1/idProduct 0x4ee6
+#else
+     write /config/usb_gadget/g1/idVendor 0x22D9
+     write /config/usb_gadget/g1/idProduct 0x2772
+#endif /* VENDOR_EDIT */
+    symlink /config/usb_gadget/g1/functions/ptp.gs1 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "accessory"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/accessory.gs2 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,adb && property:sys.usb.configfs=1
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "accessory_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/accessory.gs2 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=audio_source && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "audiosource"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/audio_source.gs3 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=audio_source,adb && property:sys.usb.configfs=1
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=audio_source,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "audiosource_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/audio_source.gs3 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,audio_source && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "accessory_audiosource"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/accessory.gs2 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/audio_source.gs3 /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,audio_source,adb && property:sys.usb.configfs=1
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=accessory,audio_source,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "accessory_audiosource_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/accessory.gs2 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/audio_source.gs3 /config/usb_gadget/g1/configs/b.1/f2
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f3
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=midi && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "midi"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/midi.gs5 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=midi,adb && property:sys.usb.configfs=1
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=midi,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "midi_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/midi.gs5 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=rndis && property:sys.usb.configfs=1
+    mkdir /config/usb_gadget/g1/functions/rndis.gs4
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=rndis,adb && property:sys.usb.configfs=1
+    start adbd
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,adb && property:sys.usb.configfs=1
+    mkdir /config/usb_gadget/g1/functions/rndis.gs4
+    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "rndis_adb"
+    rm /config/usb_gadget/g1/configs/b.1/f1
+    rm /config/usb_gadget/g1/configs/b.1/f2
+    rm /config/usb_gadget/g1/configs/b.1/f3
+    rm /config/usb_gadget/g1/configs/b.1/f4
+    rm /config/usb_gadget/g1/configs/b.1/f5
+    symlink /config/usb_gadget/g1/functions/rndis.gs4 /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f2
+    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
+    setprop sys.usb.state ${sys.usb.config}

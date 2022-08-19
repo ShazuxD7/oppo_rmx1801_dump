@@ -1,0 +1,6 @@
+com.oppo.device2
+com.felicanetworks.mfc
+com.felicanetworks.mfs
+com.felicanetworks.mfw.a.boot
+com.felicanetworks.mfm
+jp.co.fsi.felicalock
